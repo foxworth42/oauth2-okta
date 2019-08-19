@@ -1,5 +1,6 @@
 {
     "name": "foxworth42/oauth2-okta",
+    "type": "library",
     "description": "Okta OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
     "license": "MIT",
     "authors": [
