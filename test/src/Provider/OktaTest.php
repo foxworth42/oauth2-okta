@@ -49,9 +49,6 @@ class OktaTest extends TestCase
         $this->assertEquals('/oauth2/default/v1/token', $uri['path']);
     }
 
-    /**
-     * @link https://accounts.google.com/.well-known/openid-configuration
-     */
     public function testResourceOwnerDetailsUrl()
     {
         $token = $this->mockAccessToken();
