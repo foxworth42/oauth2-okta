@@ -15,7 +15,7 @@ composer require foxworth42/oauth2-okta
 
 ## Usage
 
-Usage is the same as The League's OAuth client, using `\League\OAuth2\Client\Provider\Okta` as the provider.
+Usage is the same as The League's OAuth client, using `\Foxworth42\OAuth2\Client\Provider\Okta` as the provider.
 
 You must configure the Issuer URI as the `issuer` parameter.  The issuer URI can be found in Okta's admin dashboard under API -> Authorization Servers. 
 
