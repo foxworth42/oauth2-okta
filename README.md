@@ -1,7 +1,9 @@
 # Okta Provider for OAuth 2.0 Client
+[![Latest Version](https://img.shields.io/github/release/foxworth42/oauth2-okta.svg?style=flat-square)](https://github.com/foxworth42/oauth2-okta/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/foxworth42/oauth2-okta.svg?style=flat-square)](https://packagist.org/packages/foxworth42/oauth2-okta)
 [![Build Status](https://travis-ci.org/foxworth42/oauth2-okta.svg?branch=master)](https://travis-ci.org/foxworth42/oauth2-okta)
+[![Code Coverage](https://img.shields.io/coveralls/foxworth42/oauth2-okta.svg)](https://coveralls.io/r/foxworth42/oauth2-okta)
 
 This package provides Okta OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
