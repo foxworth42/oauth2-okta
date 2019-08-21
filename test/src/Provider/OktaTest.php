@@ -34,9 +34,9 @@ class OktaTest extends TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
 
-        $this->assertStringContainsString('email', $query['scope']);
-        $this->assertStringContainsString('profile', $query['scope']);
-        $this->assertStringContainsString('openid', $query['scope']);
+        $this->assertContains('email', $query['scope']);
+        $this->assertContains('profile', $query['scope']);
+        $this->assertContains('openid', $query['scope']);
 
         $this->assertNotEmpty('state', $this->provider->getState());
     }
