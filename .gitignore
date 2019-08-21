@@ -5,3 +5,4 @@ composer.phar
 build
 .phpcs-cache
 .phpunit.result.cache
+*.swp
