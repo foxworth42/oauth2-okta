@@ -16,19 +16,19 @@ class OktaUserTest extends TestCase
             'name' => 'mock name',
             'given_name' => 'mock',
             'family_name' => 'name',
-            'picture' => 'mock_image_url',
-            'hd' => 'example.com',
-            'locale' => 'en',
+            'locale' => 'en-US',
+            'preferred_username' => 'mockusername',
+            'zoneinfo' => 'America/Los_Angeles'
         ]);
 
         $this->assertEquals(12345, $user->getId());
         $this->assertEquals('mock name', $user->getName());
         $this->assertEquals('mock', $user->getFirstName());
         $this->assertEquals('name', $user->getLastName());
-        $this->assertEquals('en', $user->getLocale());
+        $this->assertEquals('en-US', $user->getLocale());
         $this->assertEquals('mock.name@example.com', $user->getEmail());
-        $this->assertEquals('example.com', $user->getHostedDomain());
-        $this->assertEquals('mock_image_url', $user->getAvatar());
+        $this->assertEquals('mockusername', $user->getPreferredUsername());
+        $this->assertEquals('America/Los_Angeles', $user->getZoneInfo());
     }
 
     public function testUserPartialData()
@@ -41,8 +41,8 @@ class OktaUserTest extends TestCase
         ]);
 
         $this->assertEquals(null, $user->getEmail());
-        $this->assertEquals(null, $user->getHostedDomain());
-        $this->assertEquals(null, $user->getAvatar());
         $this->assertEquals(null, $user->getLocale());
+        $this->assertEquals(null, $user->getPreferredUsername());
+        $this->assertEquals(null, $user->getZoneInfo());
     }
 }

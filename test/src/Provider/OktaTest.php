@@ -67,8 +67,8 @@ class OktaTest extends TestCase
             'name' => 'mock name',
             'given_name' => 'mock',
             'family_name' => 'name',
-            'picture' => 'mock_image_url',
-            'hd' => 'example.com',
+            'preferred_username' => 'mockusername',
+            'zoneinfo' => 'America/Los_Angeles'
         ];
 
         $token = $this->mockAccessToken();
@@ -91,17 +91,15 @@ class OktaTest extends TestCase
         $this->assertEquals('mock name', $user->getName());
         $this->assertEquals('mock', $user->getFirstName());
         $this->assertEquals('name', $user->getLastName());
+        $this->assertEquals('mockusername', $user->getPreferredUsername());
+        $this->assertEquals('America/Los_Angeles', $user->getZoneInfo());
         $this->assertEquals('mock.name@example.com', $user->getEmail());
-        $this->assertEquals('example.com', $user->getHostedDomain());
-        $this->assertEquals('mock_image_url', $user->getAvatar());
 
         $user = $user->toArray();
 
         $this->assertArrayHasKey('sub', $user);
         $this->assertArrayHasKey('name', $user);
         $this->assertArrayHasKey('email', $user);
-        $this->assertArrayHasKey('hd', $user);
-        $this->assertArrayHasKey('picture', $user);
         $this->assertArrayHasKey('family_name', $user);
     }
 
@@ -133,6 +131,22 @@ class OktaTest extends TestCase
             $response->getHeader->called(),
             $response->getBody->called()
         );
+    }
+    
+    
+    public function testCanChangeOktaApiVersion()
+    {
+        $this->provider = new OktaProvider([
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'issuer' => 'https://demo.oktapreview.com/oauth2/default',
+            'apiVersion' => 'v2'
+        ]);
+        
+        $url = $this->provider->getBaseAccessTokenUrl([]);
+        $uri = parse_url($url);
+        
+        $this->assertEquals('/oauth2/default/v2/token', $uri['path']);
     }
 
     /**

@@ -79,29 +79,29 @@ class OktaUser implements ResourceOwnerInterface
         }
         return null;
     }
-
+    
     /**
-     * Get hosted domain.
-     *
+     * Get preferred username.
+     * 
      * @return string|null
      */
-    public function getHostedDomain()
+    public function getPreferredUsername()
     {
-        if (array_key_exists('hd', $this->response)) {
-            return $this->response['hd'];
+        if (array_key_exists('preferred_username', $this->response)) {
+            return $this->response['preferred_username'];
         }
         return null;
     }
-
+    
     /**
-     * Get avatar image URL.
-     *
+     * Get timezone for user.
+     * 
      * @return string|null
      */
-    public function getAvatar()
+    public function getZoneInfo()
     {
-        if (array_key_exists('picture', $this->response)) {
-            return $this->response['picture'];
+        if (array_key_exists('zoneinfo', $this->response)) {
+            return $this->response['zoneinfo'];
         }
         return null;
     }

@@ -12,7 +12,14 @@ class Okta extends AbstractProvider
 {
     use BearerAuthorizationTrait;
     
-    public $issuer = '';
+    protected $issuer = '';
+    protected $apiVersion = 'v1';
+    
+    
+    public function getBaseApiUrl()
+    {
+        return $this->issuer . '/' . $this->apiVersion;
+    }
     
     /**
      * Get authorization url to begin OAuth flow
@@ -22,7 +29,7 @@ class Okta extends AbstractProvider
      */
     public function getBaseAuthorizationUrl()
     {
-        return $this->issuer.'/v1/authorize';
+        return $this->getBaseApiUrl().'/authorize';
     }
 
     /**
@@ -35,7 +42,7 @@ class Okta extends AbstractProvider
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        return $this->issuer.'/v1/token';
+        return $this->getBaseApiUrl().'/token';
     }
 
     /**
@@ -48,7 +55,7 @@ class Okta extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return $this->issuer.'/v1/userinfo';
+        return $this->getBaseApiUrl().'/userinfo';
     }
 
     protected function getAuthorizationParameters(array $options)
@@ -58,11 +65,10 @@ class Okta extends AbstractProvider
 
     protected function getDefaultScopes()
     {
-        // "openid" MUST be the first scope in the list.
         return [
             'openid',
             'email',
-            'profile',
+            'profile'
         ];
     }
 
@@ -79,7 +85,7 @@ class Okta extends AbstractProvider
         }
         // @codeCoverageIgnoreEnd
 
-        $code = 0;
+        $code = $response->getStatusCode();
         $error = $data['error'];
 
         if (is_array($error)) {
