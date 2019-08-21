@@ -82,7 +82,7 @@ class OktaUser implements ResourceOwnerInterface
     
     /**
      * Get preferred username.
-     * 
+     *
      * @return string|null
      */
     public function getPreferredUsername()
@@ -95,7 +95,7 @@ class OktaUser implements ResourceOwnerInterface
     
     /**
      * Get timezone for user.
-     * 
+     *
      * @return string|null
      */
     public function getZoneInfo()
