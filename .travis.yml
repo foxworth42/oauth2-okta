@@ -20,7 +20,7 @@ matrix:
 
 install:
   - if [[ $MINIMUM_VERSIONS = false ]]; then composer install; fi
-  - if [[ $MINIMUM_VERSIONS = true ]]; then composer update --no-interaction --prefer-lowest; fi
+  - if [[ $MINIMUM_VERSIONS = true ]]; then composer update --no-interaction --prefer-lowest; mkdir build; fi
 
 script:
   - composer run test
