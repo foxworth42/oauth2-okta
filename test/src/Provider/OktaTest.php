@@ -14,7 +14,7 @@ class OktaTest extends TestCase
     /** @var OktaProvider */
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new OktaProvider([
             'clientId' => 'mock_client_id',
@@ -34,11 +34,11 @@ class OktaTest extends TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
 
-        $this->assertContains('email', $query['scope']);
-        $this->assertContains('profile', $query['scope']);
-        $this->assertContains('openid', $query['scope']);
+        $this->assertStringContainsString('email', $query['scope']);
+        $this->assertStringContainsString('profile', $query['scope']);
+        $this->assertStringContainsString('openid', $query['scope']);
 
-        $this->assertAttributeNotEmpty('state', $this->provider);
+        $this->assertNotEmpty('state', $this->provider->getState());
     }
 
     public function testBaseAccessTokenUrl()
