@@ -2,30 +2,27 @@
 
 namespace Foxworth42\OAuth2\Client\Test\Provider;
 
-use Eloquent\Phony\Phpunit\Phony;
+use Foxworth42\OAuth2\Client\Provider\Okta;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use Foxworth42\OAuth2\Client\Provider\Okta as OktaProvider;
 use League\OAuth2\Client\Provider\OktaUser;
 use League\OAuth2\Client\Token\AccessToken;
 use PHPUnit\Framework\TestCase;
 
 class OktaTest extends TestCase
 {
-    /** @var OktaProvider */
-    protected $provider;
-
-    protected function setUp(): void
-    {
-        $this->provider = new OktaProvider([
-            'clientId' => 'mock_client_id',
-            'clientSecret' => 'mock_secret',
-            'issuer' => 'https://demo.oktapreview.com/oauth2/default'
-        ]);
-    }
-
     public function testAuthorizationUrl()
     {
-        $url = $this->provider->getAuthorizationUrl();
+        // Arrange
+        $oktaProvider = $this->getOktaProvider();
+
+        // Act
+        $url = $oktaProvider->getAuthorizationUrl();
+
+        // Assert
         $uri = parse_url($url);
         parse_str($uri['query'], $query);
 
@@ -38,12 +35,18 @@ class OktaTest extends TestCase
         $this->assertContains('profile', $query['scope']);
         $this->assertContains('openid', $query['scope']);
 
-        $this->assertNotEmpty('state', $this->provider->getState());
+        $this->assertNotEmpty('state', $oktaProvider->getState());
     }
 
     public function testBaseAccessTokenUrl()
     {
-        $url = $this->provider->getBaseAccessTokenUrl([]);
+        // Arrange
+        $oktaProvider = $this->getOktaProvider();
+
+        // Act
+        $url = $oktaProvider->getBaseAccessTokenUrl([]);
+
+        // Assert
         $uri = parse_url($url);
 
         $this->assertEquals('/oauth2/default/v1/token', $uri['path']);
@@ -51,16 +54,20 @@ class OktaTest extends TestCase
 
     public function testResourceOwnerDetailsUrl()
     {
+        // Arrange
+        $oktaProvider = $this->getOktaProvider();
         $token = $this->mockAccessToken();
 
-        $url = $this->provider->getResourceOwnerDetailsUrl($token);
+        // Act
+        $url = $oktaProvider->getResourceOwnerDetailsUrl($token);
 
+        // Assert
         $this->assertEquals('https://demo.oktapreview.com/oauth2/default/v1/userinfo', $url);
     }
 
     public function testUserData()
     {
-        // Mock
+        // Arrange
         $response = [
             'sub' => '12345',
             'email' => 'mock.name@example.com',
@@ -70,21 +77,20 @@ class OktaTest extends TestCase
             'preferred_username' => 'mockusername',
             'zoneinfo' => 'America/Los_Angeles'
         ];
+        $mockGuzzleResponses = new MockHandler([
+            new Response(200, [], json_encode($response))
+        ]);
+        $mockGuzzleHandler = HandlerStack::create($mockGuzzleResponses);
+        $guzzleClient = new Client(['handler' => $mockGuzzleHandler]);
 
         $token = $this->mockAccessToken();
 
-        $provider = Phony::partialMock(OktaProvider::class);
-        $provider->fetchResourceOwnerDetails->returns($response);
-        $google = $provider->get();
+        $oktaProvider = new Okta([], ["httpClient" => $guzzleClient]);
 
-        // Execute
-        $user = $google->getResourceOwner($token);
+        // Act
+        $user = $oktaProvider->getResourceOwner($token);
 
-        // Verify
-        Phony::inOrder(
-            $provider->fetchResourceOwnerDetails->called()
-        );
-
+        // Assert
         $this->assertInstanceOf('League\OAuth2\Client\Provider\ResourceOwnerInterface', $user);
 
         $this->assertEquals(12345, $user->getId());
@@ -105,57 +111,58 @@ class OktaTest extends TestCase
 
     public function testErrorResponse()
     {
-        // Mock
+        // Arrange
         $error_json = '{"error": {"code": 400, "message": "I am an error"}}';
-
-        $response = Phony::mock('GuzzleHttp\Psr7\Response');
-        $response->getHeader->returns(['application/json']);
-        $response->getBody->returns($error_json);
-
-        $provider = Phony::partialMock(OktaProvider::class);
-        $provider->getResponse->returns($response);
-
-        $google = $provider->get();
+        $mockGuzzleResponses = new MockHandler([
+            new Response(400, [], $error_json)
+        ]);
+        $mockGuzzleHandler = HandlerStack::create($mockGuzzleResponses);
+        $guzzleClient = new Client(['handler' => $mockGuzzleHandler]);
 
         $token = $this->mockAccessToken();
 
-        // Expect
+        $oktaProvider = new Okta([], ["httpClient" => $guzzleClient]);
+
+        // Assert
         $this->expectException(IdentityProviderException::class);
 
-        // Execute
-        $user = $google->getResourceOwner($token);
-
-        // Verify
-        Phony::inOrder(
-            $provider->getResponse->calledWith($this->instanceOf('GuzzleHttp\Psr7\Request')),
-            $response->getHeader->called(),
-            $response->getBody->called()
-        );
+        // Act
+        $oktaProvider->getResourceOwner($token);
     }
     
     
     public function testCanChangeOktaApiVersion()
     {
-        $this->provider = new OktaProvider([
+        // Arrange
+        $oktaProvider = new Okta([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'issuer' => 'https://demo.oktapreview.com/oauth2/default',
             'apiVersion' => 'v2'
         ]);
-        
-        $url = $this->provider->getBaseAccessTokenUrl([]);
+
+        // Act
+        $url = $oktaProvider->getBaseAccessTokenUrl([]);
+
+        // Assert
         $uri = parse_url($url);
         
         $this->assertEquals('/oauth2/default/v2/token', $uri['path']);
     }
 
-    /**
-     * @return AccessToken
-     */
-    private function mockAccessToken()
+    private function mockAccessToken(): AccessToken
     {
         return new AccessToken([
             'access_token' => 'mock_access_token',
+        ]);
+    }
+
+    protected function getOktaProvider(): Okta
+    {
+        return new Okta([
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'issuer' => 'https://demo.oktapreview.com/oauth2/default'
         ]);
     }
 }
