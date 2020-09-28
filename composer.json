@@ -39,6 +39,7 @@
     },
     "scripts": {
         "test": "phpunit",
+        "check": "phpcs",
         "lint": "phpcs",
         "lint-fix": "phpcbf"
     }
