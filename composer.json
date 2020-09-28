@@ -23,7 +23,6 @@
         "league/oauth2-client": "^2.0"
     },
     "require-dev": {
-        "eloquent/phony-phpunit": "^4.0",
         "phpunit/phpunit": "^7.0",
         "php-coveralls/php-coveralls": "^2.1",
         "squizlabs/php_codesniffer": "^3.4"
@@ -35,11 +34,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Foxworth42\\OAuth2\\Client\\Test\\": "tests/src/"
+            "Foxworth42\\OAuth2\\Client\\Test\\": "tests/"
         }
     },
     "scripts": {
         "test": "phpunit",
-        "check": "phpcs"
+        "check": "phpcs",
+        "lint": "phpcs",
+        "lint-fix": "phpcbf"
     }
 }
