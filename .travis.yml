@@ -8,8 +8,6 @@ cache:
 env:
   jobs:
     - MINIMUM_VERSIONS=false
-  global:
-    - XDEBUG_MODE=coverage
 
 php:
   - 7.1
