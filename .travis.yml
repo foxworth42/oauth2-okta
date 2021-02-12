@@ -5,14 +5,16 @@ cache:
     - vendor
     - $HOME/.composer/cache
 
-env: MINIMUM_VERSIONS=false
+env:
+  - MINIMUM_VERSIONS=false
+  - XDEBUG_MODE=coverage
 
 php:
   - 7.1
   - 7.2
   - 7.3
   - 7.4
-  - 8.0
+#  - 8.0  # PHP 8.0 requires newer version of phpunit.
 
 
 matrix:
