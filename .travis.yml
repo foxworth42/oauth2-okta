@@ -6,8 +6,10 @@ cache:
     - $HOME/.composer/cache
 
 env:
-  - MINIMUM_VERSIONS=false
-  - XDEBUG_MODE=coverage
+  jobs:
+    - MINIMUM_VERSIONS=false
+  global:
+    - XDEBUG_MODE=coverage
 
 php:
   - 7.1
