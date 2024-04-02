@@ -59,13 +59,16 @@ class Okta extends AbstractProvider
         return $this->getBaseApiUrl().'/userinfo';
     }
 
+    /**
+     * @return array
+     **/
     protected function getAuthorizationParameters(array $options)
     {
         return parent::getAuthorizationParameters($options);
     }
 
     /**
-     * @retrun array
+     * @return array
      **/
     protected function getDefaultScopes()
     {
@@ -77,7 +80,7 @@ class Okta extends AbstractProvider
     }
 
     /**
-     * @retrun string
+     * @return string
      **/
     protected function getScopeSeparator()
     {
@@ -85,7 +88,7 @@ class Okta extends AbstractProvider
     }
 
     /**
-     * @retrun void
+     * @return void
      **/
     protected function checkResponse(ResponseInterface $response, $data)
     {
@@ -107,7 +110,7 @@ class Okta extends AbstractProvider
     }
 
     /**
-     * @retrun ResourceOwnerInterface
+     * @return ResourceOwnerInterface
      **/
     protected function createResourceOwner(array $response, AccessToken $token)
     {
