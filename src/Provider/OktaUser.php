@@ -19,6 +19,9 @@ class OktaUser implements ResourceOwnerInterface
         $this->response = $response;
     }
 
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->response['sub'];
